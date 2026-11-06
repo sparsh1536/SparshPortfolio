@@ -196,3 +196,32 @@
 .portfolio-welcome{margin:0 0 22px;font:800 clamp(21px,2.35vw,32px)/1.05 var(--display);letter-spacing:-.055em;color:#eef5ff;text-transform:uppercase}
 .portfolio-welcome span{color:var(--acid)}
 @media(max-width:680px){.portfolio-welcome{font-size:clamp(21px,6vw,28px);margin-bottom:18px}}
+
+
+/* Animated oversized welcome headline */
+.portfolio-welcome{
+  position:relative;display:inline-block;isolation:isolate;
+  margin:0 0 27px;
+  font:800 clamp(30px,3.8vw,52px)/1.02 var(--display);
+  letter-spacing:-.065em;
+  color:#eef5ff;
+  text-transform:uppercase;
+  transform-origin:left center;
+  animation:welcomeArrive .95s cubic-bezier(.2,.8,.2,1) both, welcomeFloat 5s ease-in-out 1s infinite;
+  text-shadow:0 0 22px rgba(57,200,255,.14);
+  transition:color .3s,text-shadow .3s,letter-spacing .3s,transform .3s;
+}
+.portfolio-welcome span{color:var(--acid);display:inline-block;animation:welcomeSpark 2.4s ease-in-out 1.2s infinite}
+.portfolio-welcome:after{
+  content:"";position:absolute;left:0;bottom:-10px;width:48%;height:2px;
+  background:linear-gradient(90deg,var(--acid),rgba(57,200,255,0));
+  transform-origin:left;animation:welcomeLine 1.1s .45s cubic-bezier(.2,.8,.2,1) both;
+}
+.portfolio-welcome:hover{color:#fff;letter-spacing:-.045em;transform:translateY(-3px) scale(1.025);text-shadow:0 0 28px rgba(57,200,255,.36)}
+.portfolio-welcome:hover:after{width:100%;transition:width .35s}
+@keyframes welcomeArrive{from{opacity:0;transform:translateY(24px);filter:blur(8px)}to{opacity:1;transform:translateY(0);filter:blur(0)}}
+@keyframes welcomeFloat{0%,100%{text-shadow:0 0 18px rgba(57,200,255,.12)}50%{text-shadow:0 0 30px rgba(57,200,255,.28)}}
+@keyframes welcomeSpark{0%,100%{transform:scale(1);text-shadow:0 0 0 transparent}50%{transform:scale(1.18);text-shadow:0 0 18px var(--acid)}}
+@keyframes welcomeLine{from{transform:scaleX(0)}to{transform:scaleX(1)}}
+@media(max-width:680px){.portfolio-welcome{font-size:clamp(28px,8vw,39px);margin-bottom:24px}}
+@media(prefers-reduced-motion:reduce){.portfolio-welcome,.portfolio-welcome span,.portfolio-welcome:after{animation:none}}
