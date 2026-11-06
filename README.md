@@ -8,6 +8,9 @@ Open `index.html` in a browser. No build step is required.
 ## Sections
 Home · About · Selected Projects · Technical Stack · Education · Contact.
 
+## Deployment
+Configured for Vercel as a static site using the `Other` framework preset. The site is served from the repository root via `index.html` and `styles.css`.
+
 ## Notes
 - CivicLens is a private repository, so its source link is marked restricted.
 - The LinkedIn link is a placeholder and should be replaced with the correct profile URL before public promotion.
