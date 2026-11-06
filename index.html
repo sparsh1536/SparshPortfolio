@@ -153,7 +153,7 @@ if(!reduceMotion){
   .polygonsData([])
   .polygonCapColor(()=> 'rgba(17,49,76,0.88)')
   .polygonSideColor(()=> 'rgba(20,76,111,0.22)')
-  .polygonStrokeColor(d=>String(d.id)==='356' ? 'rgba(0,0,0,0)' : 'rgba(91,190,235,0.62)')
+  .polygonStrokeColor(()=> 'rgba(91,190,235,0.62)')
   .polygonAltitude(.006)
   .arcsData(links)
   .arcStartLat('startLat').arcStartLng('startLng')
@@ -174,35 +174,12 @@ if(!reduceMotion){
  globe.pointOfView({lat:22,lng:75,altitude:2.15},0);
  const resize=()=>{const w=host.clientWidth,h=host.clientHeight;globe.width(w).height(h)};
  resize();new ResizeObserver(resize).observe(host);
- let baseCountries=[];
- const renderCountries=()=>{
-  if(!baseCountries.length)return;
-  globe.polygonsData(baseCountries);
- };
  fetch('https://unpkg.com/world-atlas@2/countries-110m.json')
   .then(r=>{if(!r.ok)throw new Error('Map data unavailable');return r.json()})
   .then(topology=>{
-   baseCountries=topojson.feature(topology,topology.objects.countries).features;
-   renderCountries();
+   const features=topojson.feature(topology,topology.objects.countries).features;
+   globe.polygonsData(features);
   }).catch(err=>console.error('World country geometry unavailable:',err));
- // Keep the world map's India land fill, but replace its disputed generic
- // stroke with one dissolved national boundary line from DataMeet.
- fetch('/india-national-boundary.geojson')
-  .then(r=>{if(!r.ok)throw new Error('India boundary data unavailable');return r.json()})
-  .then(data=>{
-   const coordinates=data.features[0].geometry.coordinates;
-   const points=coordinates.map(([lng,lat])=>({lng,lat}));
-   globe.pathsData([{points}])
-    .pathPoints('points')
-    .pathPointLat(p=>p.lat)
-    .pathPointLng(p=>p.lng)
-    .pathColor(()=> 'rgba(91,190,235,0.88)')
-    .pathStroke(0.72)
-    .pathAltitude(0.009)
-    .pathDashLength(1)
-    .pathDashGap(0);
-   console.info('Dissolved India national boundary loaded');
-  }).catch(err=>console.error('India national boundary unavailable:',err));
  const pause=()=>{controls.autoRotate=false};
  const resume=()=>{if(!reduced)controls.autoRotate=true};
  host.addEventListener('pointerdown',pause);
