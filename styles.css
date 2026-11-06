@@ -190,3 +190,9 @@
 @media(max-width:950px){.hero{grid-template-columns:1fr}.hero-side{min-height:0;margin:15px auto 0;width:100%}.globe-stage{height:min(72vw,560px);min-height:360px;max-width:680px;margin:auto}}
 @media(max-width:680px){.hero-side{margin-top:10px}.globe-stage{height:390px;min-height:0;width:112%;margin-left:-6%}.globe-hint{bottom:12px;font-size:7px}.globe-status{top:10px;right:10px;font-size:7px}}
 @media(prefers-reduced-motion:reduce){.globe-hint:after{content:" · MOTION REDUCED"}}
+
+
+/* Clear portfolio identity at first glance */
+.portfolio-welcome{margin:0 0 22px;font:800 clamp(21px,2.35vw,32px)/1.05 var(--display);letter-spacing:-.055em;color:#eef5ff;text-transform:uppercase}
+.portfolio-welcome span{color:var(--acid)}
+@media(max-width:680px){.portfolio-welcome{font-size:clamp(21px,6vw,28px);margin-bottom:18px}}
