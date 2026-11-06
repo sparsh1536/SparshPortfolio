@@ -119,84 +119,44 @@ if(!reduceMotion){
 
 
 <script>
-/* Original cinematic-tech soundscape and tactile interface sounds. */
+/* Background music: user-controlled MP3 playback */
 (()=>{
  const toggle=document.querySelector('.sound-toggle');
  if(!toggle)return;
- let ctx=null,master=null,musicGain=null,musicTimer=null,enabled=true,step=0,lastHover=null;
- const progression=[55,65.41,73.42,49,58.27,69.3,43.65,58.27];
- const getAudio=()=>{
-  if(!ctx){
-   ctx=new (window.AudioContext||window.webkitAudioContext)();
-   master=ctx.createGain();master.gain.value=.52;master.connect(ctx.destination);
-   musicGain=ctx.createGain();musicGain.gain.value=0;musicGain.connect(master);
+ const audio=new Audio('portfolio-bgm.mp3');
+ audio.loop=true;
+ audio.preload='none';
+ audio.volume=0.5;
+ let enabled=false;
+ const label=toggle.querySelector('.sound-label');
+ const setState=on=>{
+  enabled=on;
+  toggle.classList.toggle('is-on',on);
+  toggle.setAttribute('aria-pressed',String(on));
+  toggle.setAttribute('aria-label',on?'Turn sound off':'Turn sound on');
+  if(label)label.textContent=on?'SOUND ON':'SOUND OFF';
+ };
+ toggle.addEventListener('click',async()=>{
+  if(enabled){
+   audio.pause();
+   setState(false);
+   return;
   }
-  if(ctx.state==='suspended')ctx.resume();
- };
- const voice=(freq,duration,volume,type,destination,detune=0)=>{
-  if(!ctx)return;
-  const now=ctx.currentTime,osc=ctx.createOscillator(),amp=ctx.createGain(),filter=ctx.createBiquadFilter();
-  osc.type=type;osc.frequency.setValueAtTime(freq,now);osc.detune.value=detune;
-  filter.type='lowpass';filter.frequency.setValueAtTime(type==='sawtooth'?850:2400,now);
-  amp.gain.setValueAtTime(.0001,now);amp.gain.exponentialRampToValueAtTime(Math.max(.0002,volume),now+.035);
-  amp.gain.exponentialRampToValueAtTime(.0001,now+duration);
-  osc.connect(filter);filter.connect(amp);amp.connect(destination||master);osc.start(now);osc.stop(now+duration+.04);
- };
- const pulse=()=>{
-  if(!enabled||!ctx)return;
-  const root=progression[step++%progression.length],now=ctx.currentTime;
-  voice(root,2.8,.035,'sawtooth',musicGain);
-  voice(root*2,2.1,.012,'triangle',musicGain,4);
-  voice(root*3,1.5,.008,'sine',musicGain);
-  // A short, original rising synth motif gives the page a restrained cinematic feel.
-  [root*4,root*5,root*6].forEach((f,i)=>voice(f,.42,.012,'triangle',musicGain));
- };
- const startMusic=()=>{
-  if(!enabled||!ctx||musicTimer)return;
-  pulse();musicTimer=setInterval(pulse,2800);
-  musicGain.gain.cancelScheduledValues(ctx.currentTime);
-  musicGain.gain.setTargetAtTime(.62,ctx.currentTime,.65);
- };
- const stopMusic=()=>{
-  if(musicTimer)clearInterval(musicTimer);musicTimer=null;
-  if(ctx&&musicGain){musicGain.gain.cancelScheduledValues(ctx.currentTime);musicGain.gain.setTargetAtTime(0,ctx.currentTime,.16)}
- };
- const clickSound=()=>{
-  if(!enabled)return;getAudio();
-  voice(180,.045,.055,'triangle',master);
-  voice(740,.075,.055,'sine',master);
-  voice(1110,.11,.025,'sine',master);
- };
- const hoverSound=()=>{if(enabled&&ctx)voice(520,.045,.012,'triangle',master)};
- toggle.addEventListener('click',()=>{
-  getAudio();enabled=!enabled;
-  if(enabled){startMusic();voice(880,.12,.045,'sine',master)}
-  else stopMusic();
-  toggle.classList.toggle('is-on',enabled);toggle.setAttribute('aria-pressed',String(enabled));
-  toggle.setAttribute('aria-label',enabled?'Turn sound off':'Turn sound on');
-  toggle.querySelector('.sound-label').textContent=enabled?'SOUND ON':'SOUND OFF';
+  try{
+   await audio.play();
+   setState(true);
+  }catch(error){
+   setState(false);
+   console.warn('Background music could not start:',error);
+  }
  });
- document.addEventListener('click',e=>{
-  const target=e.target.closest('a,button,[role="button"],[tabindex]:not([tabindex="-1"])');
-  if(target&&target!==toggle)clickSound();
- },true);
- document.addEventListener('pointerover',e=>{
-  const target=e.target.closest('a,button,[role="button"]');
-  if(target&&target!==toggle&&target!==lastHover){lastHover=target;hoverSound()}
- },{passive:true});
- document.addEventListener('pointerout',e=>{
-  if(lastHover&&e.target===lastHover)lastHover=null;
- },{passive:true});
  document.addEventListener('visibilitychange',()=>{
-  if(document.hidden)stopMusic();
-  else if(enabled&&ctx){if(ctx.state==='suspended')ctx.resume();startMusic()}
+  if(document.hidden)audio.pause();
+  else if(enabled)audio.play().catch(()=>setState(false));
  });
- toggle.classList.add('is-on');toggle.setAttribute('aria-pressed','true');
- toggle.setAttribute('aria-label','Turn sound off');toggle.querySelector('.sound-label').textContent='SOUND ON';
- const unlock=()=>{if(!enabled)return;getAudio();startMusic()};
- document.addEventListener('pointerdown',unlock,{once:true,capture:true});
- document.addEventListener('keydown',unlock,{once:true});
-})();</script>
+ setState(false);
+})();
+</script>
 
 <script src="https://unpkg.com/globe.gl"></script>
 <script src="https://unpkg.com/topojson-client@3"></script>
