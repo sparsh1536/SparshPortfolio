@@ -117,6 +117,7 @@ if(!reduceMotion){
 
 <script src="https://unpkg.com/globe.gl"></script>
 <script src="https://unpkg.com/topojson-client@3"></script>
+<script src="https://unpkg.com/shpjs@latest/dist/shp.min.js"></script>
 <script>
 (()=>{
  const host=document.getElementById('interactive-globe');
@@ -179,6 +180,27 @@ if(!reduceMotion){
    const features=topojson.feature(topology,topology.objects.countries).features;
    globe.polygonsData(features);
   }).catch(()=>{});
+ // Official Survey of India boundary overlay for the northern outline.
+ fetch('https://surveyofindia.gov.in/documents/Outline_of_India.zip')
+  .then(r=>{if(!r.ok)throw new Error('Official outline unavailable');return r.arrayBuffer()})
+  .then(buf=>shp(buf))
+  .then(data=>{
+   const collections=Array.isArray(data)?data:[data];
+   const paths=[];
+   const addLine=line=>paths.push(line.map(p=>({lat:p[1],lng:p[0]})));
+   const visit=geom=>{
+    if(!geom)return;
+    if(geom.type==='LineString')addLine(geom.coordinates);
+    else if(geom.type==='MultiLineString')geom.coordinates.forEach(addLine);
+    else if(geom.type==='Polygon')geom.coordinates.forEach(addLine);
+    else if(geom.type==='MultiPolygon')geom.coordinates.forEach(poly=>poly.forEach(addLine));
+    else if(geom.type==='GeometryCollection')geom.geometries.forEach(visit);
+   };
+   collections.flatMap(fc=>fc.features||[]).forEach(f=>visit(f.geometry));
+   if(paths.length)globe.pathsData(paths)
+    .pathPoints('points').pathPointLat(p=>p.lat).pathPointLng(p=>p.lng)
+    .pathColor(()=> '#ff4568').pathStroke(1.5).pathDashLength(1).pathDashGap(0);
+  }).catch(err=>console.warn('Survey of India boundary overlay unavailable:',err));
  const pause=()=>{controls.autoRotate=false};
  const resume=()=>{if(!reduced)controls.autoRotate=true};
  host.addEventListener('pointerdown',pause);
