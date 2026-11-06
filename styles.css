@@ -225,3 +225,29 @@
 @keyframes welcomeLine{from{transform:scaleX(0)}to{transform:scaleX(1)}}
 @media(max-width:680px){.portfolio-welcome{font-size:clamp(28px,8vw,39px);margin-bottom:24px}}
 @media(prefers-reduced-motion:reduce){.portfolio-welcome,.portfolio-welcome span,.portfolio-welcome:after{animation:none}}
+
+
+/* Compact, opt-in audio control */
+.sound-toggle{
+ position:fixed;right:24px;bottom:24px;z-index:1000;
+ display:flex;align-items:center;gap:10px;padding:11px 14px;
+ color:#dcecf5;background:rgba(7,13,24,.88);
+ border:1px solid rgba(57,200,255,.42);border-radius:999px;
+ font:500 10px/1 "DM Mono",monospace;letter-spacing:.12em;
+ cursor:pointer;backdrop-filter:blur(14px);
+ box-shadow:0 0 24px rgba(25,154,220,.12);
+ transition:transform .25s,border-color .25s,box-shadow .25s,color .25s;
+}
+.sound-toggle:hover{transform:translateY(-3px);border-color:#39c8ff;box-shadow:0 0 28px rgba(57,200,255,.24)}
+.sound-icon{font-size:17px;color:#ff4568}
+.sound-bars{height:13px;display:flex;align-items:center;gap:2px}
+.sound-bars b{display:block;width:2px;height:4px;background:#39c8ff;border-radius:2px}
+.sound-toggle.is-on{border-color:#ff4568;color:#fff;box-shadow:0 0 25px rgba(255,69,104,.16)}
+.sound-toggle.is-on .sound-icon{color:#39c8ff}
+.sound-toggle.is-on .sound-bars b{animation:soundWave .7s ease-in-out infinite alternate}
+.sound-toggle.is-on .sound-bars b:nth-child(2){animation-delay:.15s}
+.sound-toggle.is-on .sound-bars b:nth-child(3){animation-delay:.3s}
+.sound-toggle.is-on .sound-bars b:nth-child(4){animation-delay:.45s}
+@keyframes soundWave{from{height:3px}to{height:13px}}
+@media(max-width:680px){.sound-toggle{right:14px;bottom:14px;padding:10px 12px}}
+@media(prefers-reduced-motion:reduce){.sound-toggle.is-on .sound-bars b{animation:none;height:6px}}
