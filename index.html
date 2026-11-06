@@ -48,7 +48,7 @@
     <h2>Not just writing code.<br><span class="muted-heading">Trying to make it</span> <em>matter.</em></h2>
     <div class="about-grid">
       <div class="about-copy"><p class="large-copy">I’m pursuing a Bachelor of Engineering in Information Technology at Chandigarh University. I like taking an idea, pulling it apart, understanding the problem underneath — and building something useful from it.</p><p>My interests move between software engineering, AI-assisted research and tools that make complex information easier to understand. I learn best by building, testing and iterating.</p><a class="under-link" href="#journey">MORE ABOUT MY JOURNEY <span>↘</span></a></div>
-      <div class="profile-panel tilt-card"><div class="panel-top"><span>PROFILE / 001</span><span class="live-dot">● ONLINE</span></div><div class="profile-monogram">S<span>.</span></div><div class="profile-name">SPARSH SONI</div><div class="profile-role">IT UNDERGRADUATE · BUILDER</div><div class="profile-divider"></div><div class="profile-facts"><div><span>LOCATION</span><b>INDIA</b></div><div><span>UNIVERSITY</span><b>CHANDIGARH UNIVERSITY</b></div><div><span>FOCUS</span><b>SOFTWARE / AI / RESEARCH</b></div></div><div class="panel-corner">↗</div></div>
+      <div class="profile-panel tilt-card"><div class="panel-top"><span>PROFILE / 001</span><span class="live-dot">● ONLINE</span></div><div class="profile-portrait-wrap"><img class="profile-portrait" src="sparsh-portrait.jpg" alt="Portrait of Sparsh Soni" loading="lazy"><span class="portrait-orbit" aria-hidden="true"></span></div><div class="profile-name">SPARSH SONI</div><div class="profile-role">IT UNDERGRADUATE · BUILDER</div><div class="profile-divider"></div><div class="profile-facts"><div><span>LOCATION</span><b>INDIA</b></div><div><span>UNIVERSITY</span><b>CHANDIGARH UNIVERSITY</b></div><div><span>FOCUS</span><b>SOFTWARE / AI / RESEARCH</b></div></div><div class="panel-corner">↗</div></div>
     </div>
     <div class="quick-facts"><div><strong>03</strong><span>FEATURED PROJECTS</span></div><div><strong>BE</strong><span>INFORMATION TECHNOLOGY</span></div><div><strong>∞</strong><span>THINGS TO LEARN</span></div></div>
   </div>
@@ -119,33 +119,58 @@ if(!reduceMotion){
 
 
 <script>
-/* Original Web Audio soundscape: no external music files or autoplay. */
+/* Original cinematic-tech soundscape and tactile interface sounds. */
 (()=>{
  const toggle=document.querySelector('.sound-toggle');
  if(!toggle)return;
- let ctx=null,master=null,musicGain=null,musicTimer=null,enabled=true,step=0;
- const notes=[110,164.81,220,164.81,130.81,196,261.63,196];
+ let ctx=null,master=null,musicGain=null,musicTimer=null,enabled=true,step=0,lastHover=null;
+ const progression=[55,65.41,73.42,49,58.27,69.3,43.65,58.27];
  const getAudio=()=>{
-  if(!ctx){ctx=new (window.AudioContext||window.webkitAudioContext)();master=ctx.createGain();master.gain.value=.42;master.connect(ctx.destination);musicGain=ctx.createGain();musicGain.gain.value=0;musicGain.connect(master);}
+  if(!ctx){
+   ctx=new (window.AudioContext||window.webkitAudioContext)();
+   master=ctx.createGain();master.gain.value=.52;master.connect(ctx.destination);
+   musicGain=ctx.createGain();musicGain.gain.value=0;musicGain.connect(master);
+  }
   if(ctx.state==='suspended')ctx.resume();
  };
- const tone=(freq,duration=.09,volume=.12,type='sine',destination=master)=>{
-  if(!ctx)return;const now=ctx.currentTime,osc=ctx.createOscillator(),gain=ctx.createGain();
-  osc.type=type;osc.frequency.setValueAtTime(freq,now);gain.gain.setValueAtTime(.0001,now);gain.gain.exponentialRampToValueAtTime(volume,now+.012);gain.gain.exponentialRampToValueAtTime(.0001,now+duration);
-  osc.connect(gain);gain.connect(destination);osc.start(now);osc.stop(now+duration+.02);
+ const voice=(freq,duration,volume,type,destination,detune=0)=>{
+  if(!ctx)return;
+  const now=ctx.currentTime,osc=ctx.createOscillator(),amp=ctx.createGain(),filter=ctx.createBiquadFilter();
+  osc.type=type;osc.frequency.setValueAtTime(freq,now);osc.detune.value=detune;
+  filter.type='lowpass';filter.frequency.setValueAtTime(type==='sawtooth'?850:2400,now);
+  amp.gain.setValueAtTime(.0001,now);amp.gain.exponentialRampToValueAtTime(Math.max(.0002,volume),now+.035);
+  amp.gain.exponentialRampToValueAtTime(.0001,now+duration);
+  osc.connect(filter);filter.connect(amp);amp.connect(destination||master);osc.start(now);osc.stop(now+duration+.04);
  };
- const chord=()=>{
+ const pulse=()=>{
   if(!enabled||!ctx)return;
-  const root=notes[step++%notes.length],now=ctx.currentTime;
-  [root,root*1.5,root*2].forEach((freq,i)=>tone(freq,2.7,.018/(i+1),'sine',musicGain));
+  const root=progression[step++%progression.length],now=ctx.currentTime;
+  voice(root,2.8,.035,'sawtooth',musicGain);
+  voice(root*2,2.1,.012,'triangle',musicGain,4);
+  voice(root*3,1.5,.008,'sine',musicGain);
+  // A short, original rising synth motif gives the page a restrained cinematic feel.
+  [root*4,root*5,root*6].forEach((f,i)=>voice(f,.42,.012,'triangle',musicGain));
  };
- const startMusic=()=>{chord();musicTimer=setInterval(chord,2600);musicGain.gain.cancelScheduledValues(ctx.currentTime);musicGain.gain.setTargetAtTime(.8,ctx.currentTime,.8)};
- const stopMusic=()=>{if(musicTimer)clearInterval(musicTimer);musicTimer=null;if(ctx&&musicGain)musicGain.gain.setTargetAtTime(0,ctx.currentTime,.18)};
- const clickSound=()=>{if(!enabled)return;getAudio();tone(660,.055,.07,'sine');setTimeout(()=>tone(880,.075,.045,'sine'),38)};
- const hoverSound=()=>{if(enabled)tone(430,.035,.018,'triangle')};
+ const startMusic=()=>{
+  if(!enabled||!ctx||musicTimer)return;
+  pulse();musicTimer=setInterval(pulse,2800);
+  musicGain.gain.cancelScheduledValues(ctx.currentTime);
+  musicGain.gain.setTargetAtTime(.62,ctx.currentTime,.65);
+ };
+ const stopMusic=()=>{
+  if(musicTimer)clearInterval(musicTimer);musicTimer=null;
+  if(ctx&&musicGain){musicGain.gain.cancelScheduledValues(ctx.currentTime);musicGain.gain.setTargetAtTime(0,ctx.currentTime,.16)}
+ };
+ const clickSound=()=>{
+  if(!enabled)return;getAudio();
+  voice(180,.045,.055,'triangle',master);
+  voice(740,.075,.055,'sine',master);
+  voice(1110,.11,.025,'sine',master);
+ };
+ const hoverSound=()=>{if(enabled&&ctx)voice(520,.045,.012,'triangle',master)};
  toggle.addEventListener('click',()=>{
   getAudio();enabled=!enabled;
-  if(enabled){startMusic();tone(740,.11,.08,'sine')}
+  if(enabled){startMusic();voice(880,.12,.045,'sine',master)}
   else stopMusic();
   toggle.classList.toggle('is-on',enabled);toggle.setAttribute('aria-pressed',String(enabled));
   toggle.setAttribute('aria-label',enabled?'Turn sound off':'Turn sound on');
@@ -157,17 +182,21 @@ if(!reduceMotion){
  },true);
  document.addEventListener('pointerover',e=>{
   const target=e.target.closest('a,button,[role="button"]');
-  if(target&&target!==toggle&&target.dataset.soundHover!=='0'){target.dataset.soundHover='0';hoverSound()}
+  if(target&&target!==toggle&&target!==lastHover){lastHover=target;hoverSound()}
  },{passive:true});
- document.addEventListener('keydown',e=>{
-  if((e.key==='Enter'||e.key===' ')&&e.target.closest('a,button,[role="button"]')&&e.target!==toggle)clickSound();
+ document.addEventListener('pointerout',e=>{
+  if(lastHover&&e.target===lastHover)lastHover=null;
+ },{passive:true});
+ document.addEventListener('visibilitychange',()=>{
+  if(document.hidden)stopMusic();
+  else if(enabled&&ctx){if(ctx.state==='suspended')ctx.resume();startMusic()}
  });
- document.addEventListener('visibilitychange',()=>{if(document.hidden)stopMusic();else if(enabled)startMusic()});
- toggle.classList.add('is-on');toggle.setAttribute('aria-pressed','true');toggle.setAttribute('aria-label','Turn sound off');toggle.querySelector('.sound-label').textContent='SOUND ON';
- document.addEventListener('pointerdown',()=>{if(enabled){getAudio();startMusic()}},{once:true,capture:true});
- document.addEventListener('keydown',()=>{if(enabled){getAudio();startMusic()}},{once:true,capture:true});
-})();
-</script>
+ toggle.classList.add('is-on');toggle.setAttribute('aria-pressed','true');
+ toggle.setAttribute('aria-label','Turn sound off');toggle.querySelector('.sound-label').textContent='SOUND ON';
+ const unlock=()=>{if(!enabled)return;getAudio();startMusic()};
+ document.addEventListener('pointerdown',unlock,{once:true,capture:true});
+ document.addEventListener('keydown',unlock,{once:true});
+})();</script>
 
 <script src="https://unpkg.com/globe.gl"></script>
 <script src="https://unpkg.com/topojson-client@3"></script>
