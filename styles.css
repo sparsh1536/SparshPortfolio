@@ -51,3 +51,73 @@
 .hero-desc{font-family:'DM Sans',sans-serif;font-size:16px;font-weight:400;letter-spacing:-.015em;line-height:1.85;color:#b8c9dc;max-width:590px}
 .hero-side{justify-content:center}
 @media(max-width:680px){.hero-desc{font-size:14px;line-height:1.85}}
+
+
+/* Project gallery — product-like, tactile and clearly differentiated */
+.work-section{padding-top:150px}
+.work-heading{align-items:flex-end;margin-bottom:66px;gap:30px}
+.work-heading h2{font-size:clamp(58px,7vw,94px);line-height:.9}
+.work-heading>p{max-width:285px;margin-bottom:7px;color:#a9bad0}
+.project-grid{gap:18px}
+.project-card{border:1px solid rgba(105,157,204,.24);background:linear-gradient(145deg,#0e1929 0%,#090f1b 78%);box-shadow:0 14px 50px rgba(0,0,0,.18)}
+.project-card:after{content:"";position:absolute;inset:0;pointer-events:none;border:1px solid transparent;transition:border-color .35s}
+.project-card:hover:after{border-color:rgba(57,200,255,.55)}
+.project-wide{grid-template-columns:1.12fr .88fr;min-height:430px}
+.project-wide .project-art{min-height:430px}
+.project-art{isolation:isolate;background-color:#0b1422}
+.project-art:after{content:"";position:absolute;inset:0;z-index:0;pointer-events:none;background:linear-gradient(180deg,rgba(4,9,18,.08),transparent 35%,rgba(4,9,18,.35))}
+.art-top,.art-bottom{z-index:2}
+.civic-window,.truth-visual,.sgpa-screen{z-index:1}
+.civic-window{left:10%;right:10%;top:20%;bottom:17%;background:#0d1b2b;border-color:#3b86b2;box-shadow:0 28px 80px rgba(0,0,0,.5),0 0 45px rgba(57,200,255,.09)}
+.window-bar{background:#122a40}
+.window-nav{border-color:#244b68}
+.window-nav i,.window-lines i{background:#28668e}
+.window-main strong{font-size:clamp(16px,2.1vw,25px)}
+.window-metrics b{background:#0d2033}
+.project-info{padding:30px 30px 27px}
+.project-wide .project-info{padding:clamp(28px,3.5vw,48px)}
+.project-meta{font-size:8px;color:#9fb2c9}
+.project-status{white-space:nowrap}
+.project-info h3{font-size:clamp(27px,3vw,36px);margin:22px 0 13px}
+.project-info p{font-size:13px;line-height:1.85;color:#b7c7d9}
+.project-points{gap:9px 12px;margin:19px 0;color:#a9bad0;font-size:8px}
+.project-points span{border-left:1px solid #39c8ff;padding-left:9px}
+.project-bottom{margin-top:21px;padding-top:18px}
+.tags{gap:7px;margin-bottom:19px}
+.tags span{border-color:#315b78;background:rgba(57,200,255,.045);font-size:8px;padding:7px 9px}
+.project-link{font-size:9px;letter-spacing:.09em}
+.project-link b{font-size:16px}
+.project-card:nth-child(2){border-color:rgba(255,69,104,.25);background:linear-gradient(145deg,#211322,#100e19 78%)}
+.project-card:nth-child(2):hover:after{border-color:rgba(255,69,104,.65)}
+.project-card:nth-child(2) .project-art{background:radial-gradient(ellipse at 50% 48%,#4b1835 0%,#1a1020 48%,#0b1220 100%)}
+.project-card:nth-child(2) .truth-radar{width:205px;filter:drop-shadow(0 0 28px rgba(255,69,104,.16))}
+.project-card:nth-child(2) .truth-radar i{border-color:rgba(255,69,104,.7)}
+.project-card:nth-child(2) .truth-radar b{color:#ff718b;text-shadow:0 0 25px rgba(255,69,104,.65)}
+.project-card:nth-child(2) .truth-label{color:#ffdce4;border-color:#8c3652;background:rgba(22,10,21,.88)}
+.project-card:nth-child(2) .project-status,.project-card:nth-child(2) .project-link{color:#ff718b}
+.project-card:nth-child(2) .project-points span{border-color:#ff4568}
+.project-card:nth-child(2) .tags span{border-color:#79344e;background:rgba(255,69,104,.055)}
+.project-card:nth-child(3) .project-art{background:radial-gradient(ellipse at 52% 45%,#174a78 0%,#10233d 48%,#0b1220 100%)}
+.project-card:nth-child(3) .sgpa-screen{background:#0b1a2b;border-color:#3b86b2;box-shadow:0 24px 70px rgba(0,0,0,.5),0 0 40px rgba(57,200,255,.1)}
+.project-card:nth-child(3) .sgpa-number{color:#eaf5ff}
+.project-card:nth-child(3) .sgpa-head,.project-card:nth-child(3) .sgpa-legend{color:#a9c3dc}
+.project-card:nth-child(3) .project-status{color:#69d5ff}
+.project-card .project-art{transition:filter .4s}
+.project-card:hover .project-art{filter:saturate(1.16) brightness(1.08)}
+.project-card:hover .project-info h3{color:#fff}
+.work-foot{margin-top:30px}
+.work-foot>span{letter-spacing:.12em}
+@media(max-width:950px){.project-wide{grid-template-columns:1fr}.project-wide .project-art{min-height:330px}}
+@media(max-width:680px){
+ .work-section{padding-top:88px}
+ .work-heading{margin-bottom:35px}
+ .work-heading h2{font-size:clamp(49px,12vw,68px)}
+ .project-grid{gap:16px}
+ .project-wide .project-art{height:255px;min-height:255px}
+ .project-info,.project-wide .project-info{padding:23px 21px}
+ .project-info h3{font-size:27px;margin:17px 0 9px}
+ .project-info p{font-size:12px}
+ .project-meta{font-size:7px}
+ .project-points{font-size:7px}
+ .project-card:nth-child(2) .truth-radar{width:175px}
+}
