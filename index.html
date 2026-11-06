@@ -155,9 +155,7 @@ if(!reduceMotion){
   .polygonSideColor(()=> 'rgba(20,76,111,0.22)')
   .polygonStrokeColor(d=>String(d.id)==='356' ? 'rgba(0,0,0,0)' : 'rgba(91,190,235,0.62)')
   .polygonAltitude(.006)
-  .pointsData(points).pointLat('lat').pointLng('lng')
-  .pointColor('color').pointAltitude(.012).pointRadius('size')
-  .pointsMerge(false);
+  .pointsData([]);
  const controls=globe.controls();
  controls.enableDamping=true;
  controls.dampingFactor=.08;
