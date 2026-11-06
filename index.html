@@ -123,7 +123,7 @@ if(!reduceMotion){
 (()=>{
  const toggle=document.querySelector('.sound-toggle');
  if(!toggle)return;
- let ctx=null,master=null,musicGain=null,musicTimer=null,enabled=false,step=0;
+ let ctx=null,master=null,musicGain=null,musicTimer=null,enabled=true,step=0;
  const notes=[110,164.81,220,164.81,130.81,196,261.63,196];
  const getAudio=()=>{
   if(!ctx){ctx=new (window.AudioContext||window.webkitAudioContext)();master=ctx.createGain();master.gain.value=.42;master.connect(ctx.destination);musicGain=ctx.createGain();musicGain.gain.value=0;musicGain.connect(master);}
@@ -163,6 +163,9 @@ if(!reduceMotion){
   if((e.key==='Enter'||e.key===' ')&&e.target.closest('a,button,[role="button"]')&&e.target!==toggle)clickSound();
  });
  document.addEventListener('visibilitychange',()=>{if(document.hidden)stopMusic();else if(enabled)startMusic()});
+ toggle.classList.add('is-on');toggle.setAttribute('aria-pressed','true');toggle.setAttribute('aria-label','Turn sound off');toggle.querySelector('.sound-label').textContent='SOUND ON';
+ document.addEventListener('pointerdown',()=>{if(enabled){getAudio();startMusic()}},{once:true,capture:true});
+ document.addEventListener('keydown',()=>{if(enabled){getAudio();startMusic()}},{once:true,capture:true});
 })();
 </script>
 
