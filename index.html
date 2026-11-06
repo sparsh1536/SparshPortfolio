@@ -185,7 +185,7 @@ if(!reduceMotion){
  const decodeIndiaBoundary=s=>{let i=0,lat=0,lng=0,out=[];while(i<s.length){let r=0,sh=0,b;do{b=s.charCodeAt(i++)-63;r|=(b&31)<<sh;sh+=5}while(b>=32);lat+=(r&1)?~(r>>1):(r>>1);r=0;sh=0;do{b=s.charCodeAt(i++)-63;r|=(b&31)<<sh;sh+=5}while(b>=32);lng+=(r&1)?~(r>>1):(r>>1);out.push({lat:lat/1e5,lng:lng/1e5})}return out};
  globe.pathsData([{points:decodeIndiaBoundary(indiaBoundaryEncoded)}])
   .pathPoints('points').pathPointLat(p=>p.lat).pathPointLng(p=>p.lng)
-  .pathColor(()=> '#39c8ff').pathStroke(1.15)
+  .pathColor(()=> '#126b96').pathStroke(1.35)
   .pathAltitude(0.012).pathDashLength(1).pathDashGap(0);
  const pause=()=>{controls.autoRotate=false};
  const resume=()=>{if(!reduced)controls.autoRotate=true};
