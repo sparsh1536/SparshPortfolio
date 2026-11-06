@@ -140,7 +140,9 @@ if(!reduceMotion){
   {lat:-1.3,lng:36.8,size:0.18,color:'#55d7ff'},
   {lat:-33.9,lng:151.2,size:0.18,color:'#55d7ff'},
   {lat:-23.5,lng:-46.6,size:0.18,color:'#55d7ff'},
-  {lat:25.2,lng:55.3,size:0.18,color:'#55d7ff'}
+  {lat:25.2,lng:55.3,size:0.18,color:'#55d7ff'},
+  // Kashmir marker: explicitly identifies the Indian-administered region.
+  {lat:34.1,lng:74.8,size:0.48,color:'#ffb14a'}
  ];
  const globe=Globe()(host)
   .backgroundColor('rgba(0,0,0,0)')
@@ -163,7 +165,11 @@ if(!reduceMotion){
   .arcDashAnimateTime(2600)
   .pointsData(points).pointLat('lat').pointLng('lng')
   .pointColor('color').pointAltitude(.012).pointRadius('size')
-  .pointsMerge(false);
+  .pointsMerge(false)
+  .labelsData([{lat:34.1,lng:74.8,text:'JAMMU & KASHMIR · INDIA'}])
+  .labelLat('lat').labelLng('lng').labelText('text')
+  .labelColor(()=> '#f4f7ff').labelSize(0.72).labelAltitude(0.035)
+  .labelDotRadius(0.24).labelDotOrientation(()=> 'bottom');
  const controls=globe.controls();
  controls.enableDamping=true;
  controls.dampingFactor=.08;
