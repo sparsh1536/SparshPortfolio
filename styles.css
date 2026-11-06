@@ -260,3 +260,25 @@
 .portrait-orbit{position:absolute;z-index:2;inset:12px;border:1px solid rgba(57,200,255,.25);pointer-events:none}
 .portrait-orbit:after{content:"";position:absolute;right:-4px;top:22%;width:7px;height:7px;border-radius:50%;background:#39c8ff;box-shadow:0 0 15px #39c8ff}
 @media(max-width:680px){.profile-portrait-wrap{height:210px}}
+
+
+/* Preserve the complete original portrait — never crop the subject */
+.profile-portrait-wrap{
+  height:auto;
+  aspect-ratio:455 / 820;
+  background:#080d16;
+}
+.profile-portrait{
+  width:100%;
+  height:100%;
+  object-fit:contain;
+  object-position:center;
+  filter:none;
+}
+.profile-panel:hover .profile-portrait{
+  transform:scale(1.015);
+  filter:none;
+}
+@media(max-width:680px){
+  .profile-portrait-wrap{height:auto;aspect-ratio:455 / 820}
+}
