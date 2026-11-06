@@ -119,7 +119,7 @@ if(!reduceMotion){
 
 
 <script>
-/* Background music: attempt autoplay immediately; visitor can manually mute */
+/* Background music: autoplay when permitted; unlock on the first real page interaction */
 (()=>{
  const toggle=document.querySelector('.sound-toggle');
  if(!toggle)return;
@@ -128,38 +128,56 @@ if(!reduceMotion){
  audio.preload='auto';
  audio.volume=0.5;
  let enabled=true;
+ let playing=false;
  const label=toggle.querySelector('.sound-label');
  const setState=on=>{
-  enabled=on;
   toggle.classList.toggle('is-on',on);
   toggle.setAttribute('aria-pressed',String(on));
   toggle.setAttribute('aria-label',on?'Turn sound off':'Turn sound on');
   if(label)label.textContent=on?'SOUND ON':'SOUND OFF';
  };
- const startMusic=()=>{
+ const playMusic=()=>{
   if(!enabled)return;
-  audio.play().catch(error=>{
-   /* Audible autoplay can be blocked by browser policy; keep the control ON. */
-   console.info('Browser blocked background autoplay:',error);
-  });
+  const attempt=audio.play();
+  if(attempt&&typeof attempt.then==='function'){
+   attempt.then(()=>{playing=true;setState(true)}).catch(()=>{
+    playing=false;
+    /* Autoplay may be blocked. The first trusted interaction retries playback. */
+   });
+  }
+ };
+ const stopMusic=()=>{
+  enabled=false;
+  playing=false;
+  audio.pause();
+  setState(false);
  };
  toggle.addEventListener('click',()=>{
-  if(enabled){
-   enabled=false;
-   audio.pause();
-   setState(false);
-  }else{
+  if(!enabled){
    enabled=true;
    setState(true);
-   startMusic();
+   playMusic();
+  }else if(audio.paused){
+   /* If autoplay was blocked, the very first sound-button click starts playback. */
+   playMusic();
+  }else{
+   stopMusic();
   }
  });
+ const unlockOnFirstInteraction=e=>{
+  if(!enabled||e.target.closest('.sound-toggle'))return;
+  playMusic();
+  document.removeEventListener('pointerdown',unlockOnFirstInteraction,true);
+  document.removeEventListener('keydown',unlockOnFirstInteraction,true);
+ };
+ document.addEventListener('pointerdown',unlockOnFirstInteraction,true);
+ document.addEventListener('keydown',unlockOnFirstInteraction,true);
  document.addEventListener('visibilitychange',()=>{
   if(document.hidden)audio.pause();
-  else if(enabled)startMusic();
+  else if(enabled)playMusic();
  });
  setState(true);
- startMusic();
+ playMusic();
 })();
 </script>
 
