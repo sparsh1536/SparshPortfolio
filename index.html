@@ -119,15 +119,16 @@ if(!reduceMotion){
 
 
 <script>
-/* Background music: user-controlled MP3 playback */
+/* Background music: enabled by default, visitor can manually mute */
 (()=>{
  const toggle=document.querySelector('.sound-toggle');
  if(!toggle)return;
  const audio=new Audio('portfolio-bgm.mp3');
  audio.loop=true;
- audio.preload='none';
+ audio.preload='auto';
  audio.volume=0.5;
- let enabled=false;
+ let enabled=true;
+ let started=false;
  const label=toggle.querySelector('.sound-label');
  const setState=on=>{
   enabled=on;
@@ -136,25 +137,31 @@ if(!reduceMotion){
   toggle.setAttribute('aria-label',on?'Turn sound off':'Turn sound on');
   if(label)label.textContent=on?'SOUND ON':'SOUND OFF';
  };
- toggle.addEventListener('click',async()=>{
+ const startMusic=()=>{
+  if(!enabled||started)return;
+  audio.play().then(()=>{started=true}).catch(()=>{
+   /* Browsers may block audible autoplay; retry after the visitor's first interaction anywhere. */
+  });
+ };
+ toggle.addEventListener('click',()=>{
   if(enabled){
+   enabled=false;
    audio.pause();
    setState(false);
-   return;
-  }
-  try{
-   await audio.play();
+  }else{
+   enabled=true;
    setState(true);
-  }catch(error){
-   setState(false);
-   console.warn('Background music could not start:',error);
+   audio.play().then(()=>{started=true}).catch(()=>{});
   }
  });
+ document.addEventListener('pointerdown',startMusic,{once:true,capture:true});
+ document.addEventListener('keydown',startMusic,{once:true});
  document.addEventListener('visibilitychange',()=>{
   if(document.hidden)audio.pause();
-  else if(enabled)audio.play().catch(()=>setState(false));
+  else if(enabled)audio.play().then(()=>{started=true}).catch(()=>{});
  });
- setState(false);
+ setState(true);
+ startMusic();
 })();
 </script>
 
