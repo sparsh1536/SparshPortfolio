@@ -29,41 +29,11 @@
     <div class="hero-foot"><span>BASED IN INDIA</span><span class="foot-rule"></span><span>BE · INFORMATION TECHNOLOGY</span><span class="hero-coord">30°N / 76°E</span></div>
   </div>
   <div class="hero-side">
-    <div class="world-visual" role="img" aria-label="Stylized world map with glowing connection arcs between regions, representing global curiosity and ideas">
-      <div class="map-glow"></div>
-      <svg class="world-map" viewBox="0 0 640 410" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-        <defs>
-          <linearGradient id="land" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#18334d"/><stop offset="1" stop-color="#0c1b2d"/></linearGradient>
-          <linearGradient id="route" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#39c8ff" stop-opacity=".12"/><stop offset=".55" stop-color="#39c8ff"/><stop offset="1" stop-color="#ff4568"/></linearGradient>
-          <filter id="glow"><feGaussianBlur stdDeviation="4" result="blur"/><feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
-        </defs>
-        <g class="map-graticule">
-          <path d="M20 100H620M20 205H620M20 310H620M160 20V390M320 20V390M480 20V390"/>
-        </g>
-        <g class="continents" fill="url(#land)" stroke="#286087" stroke-width="1.15" stroke-linejoin="round">
-          <path d="M52 91 73 64 112 49 151 57 171 77 207 82 224 103 212 124 189 130 178 151 156 158 148 184 127 194 112 177 91 171 82 146 61 132Z"/>
-          <path d="m178 194 23 12 19 36-5 39-17 47-17 22-14-31 4-37-12-30 8-35Z"/>
-          <path d="m278 82 25-18 44 5 22 18-7 20-33 8-23-10-19 5-18-12Z"/>
-          <path d="m304 130 34-12 38 15 18 34-8 42-19 44-25 22-19-23-3-35-19-24-15-35Z"/>
-          <path d="m347 77 34-22 62-8 57 17 47 28 28 32-13 25-38 3-26 25-28-8-23 20-31-10-20-29-29-10-13-29-31-9Z"/>
-          <path d="m511 254 29-13 35 10 19 24-15 25-36 8-29-18Z"/>
-          <path d="m245 58 12-15 19 4 8 16-15 10Z"/>
-          <path d="m431 224 12-9 9 14-9 18-11-7Z"/>
-        </g>
-        <g class="routes" fill="none" stroke="url(#route)" stroke-width="1.6">
-          <path d="M426 218 Q270 12 133 117" class="route route-a"/>
-          <path d="M426 218 Q350 54 330 128" class="route route-b"/>
-          <path d="M426 218 Q506 85 551 155" class="route route-c"/>
-          <path d="M426 218 Q293 325 184 276" class="route route-d"/>
-          <path d="M426 218 Q495 302 548 278" class="route route-e"/>
-        </g>
-        <g class="map-nodes" filter="url(#glow)">
-          <circle cx="426" cy="218" r="7" class="india-node"/><circle cx="426" cy="218" r="16" class="india-pulse"/>
-          <circle cx="133" cy="117" r="4"/><circle cx="330" cy="128" r="4"/><circle cx="551" cy="155" r="4"/><circle cx="184" cy="276" r="4"/><circle cx="548" cy="278" r="4"/>
-        </g>
-        <g class="map-labels"><text x="92" y="101">AMERICAS</text><text x="294" y="105">EUROPE</text><text x="456" y="205">INDIA</text><text x="526" y="137">EAST ASIA</text><text x="526" y="300">OCEANIA</text></g>
-      </svg>
-      
+    <div class="globe-stage">
+      <div class="globe-vignette"></div>
+      <div id="interactive-globe" aria-label="Interactive rotating 3D globe. Drag to explore the world." role="img"></div>
+      <div class="globe-hint"><span class="hint-dot"></span> DRAG TO EXPLORE <span class="hint-divider"></span> AUTO ROTATE</div>
+      <div class="globe-status"><span></span> GLOBAL PERSPECTIVE</div>
     </div>
   </div>
   <div class="hero-index">PORTFOLIO <span>—</span> 2026</div>
@@ -143,5 +113,77 @@ if(!reduceMotion){
   });
  }
 }
+</script>
+
+<script src="https://unpkg.com/globe.gl"></script>
+<script src="https://unpkg.com/topojson-client@3"></script>
+<script>
+(()=>{
+ const host=document.getElementById('interactive-globe');
+ if(!host||!window.Globe||!window.topojson)return;
+ const reduced=window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+ const links=[
+  {startLat:22.0,startLng:78.0,endLat:40.7,endLng:-74.0,color:['#39c8ff','#ff4568']},
+  {startLat:22.0,startLng:78.0,endLat:51.5,endLng:-0.1,color:['#39c8ff','#ff4568']},
+  {startLat:22.0,startLng:78.0,endLat:35.7,endLng:139.7,color:['#39c8ff','#ff4568']},
+  {startLat:22.0,startLng:78.0,endLat:-1.3,endLng:36.8,color:['#39c8ff','#ff4568']},
+  {startLat:22.0,startLng:78.0,endLat:-33.9,endLng:151.2,color:['#39c8ff','#ff4568']},
+  {startLat:22.0,startLng:78.0,endLat: -23.5,endLng:-46.6,color:['#39c8ff','#ff4568']},
+  {startLat:22.0,startLng:78.0,endLat:25.2,endLng:55.3,color:['#39c8ff','#ff4568']}
+ ];
+ const points=[
+  {lat:22,lng:78,size:0.42,color:'#ff4568'},
+  {lat:40.7,lng:-74,size:0.22,color:'#55d7ff'},
+  {lat:51.5,lng:-.1,size:0.2,color:'#55d7ff'},
+  {lat:35.7,lng:139.7,size:0.2,color:'#55d7ff'},
+  {lat:-1.3,lng:36.8,size:0.18,color:'#55d7ff'},
+  {lat:-33.9,lng:151.2,size:0.18,color:'#55d7ff'},
+  {lat:-23.5,lng:-46.6,size:0.18,color:'#55d7ff'},
+  {lat:25.2,lng:55.3,size:0.18,color:'#55d7ff'}
+ ];
+ const globe=Globe()(host)
+  .backgroundColor('rgba(0,0,0,0)')
+  .showGlobe(true)
+  .globeMaterial(new THREE.MeshPhongMaterial({color:'#102b46',emissive:'#061426',emissiveIntensity:.7,shininess:12}))
+  .showAtmosphere(true)
+  .atmosphereColor('#258fc9')
+  .atmosphereAltitude(.17)
+  .polygonsData([])
+  .polygonCapColor(()=> 'rgba(17,49,76,0.88)')
+  .polygonSideColor(()=> 'rgba(20,76,111,0.22)')
+  .polygonStrokeColor(()=> 'rgba(91,190,235,0.62)')
+  .polygonAltitude(.006)
+  .arcsData(links)
+  .arcStartLat('startLat').arcStartLng('startLng')
+  .arcEndLat('endLat').arcEndLng('endLng')
+  .arcColor('color').arcAltitudeAutoScale(.35)
+  .arcStroke(.55).arcDashLength(.42).arcDashGap(1.1)
+  .arcDashAnimateTime(2600)
+  .pointsData(points).pointLat('lat').pointLng('lng')
+  .pointColor('color').pointAltitude(.012).pointRadius('size')
+  .pointsMerge(false);
+ const controls=globe.controls();
+ controls.enableDamping=true;
+ controls.dampingFactor=.08;
+ controls.autoRotate=!reduced;
+ controls.autoRotateSpeed=.42;
+ controls.minDistance=globe.camera().position.length()*.78;
+ controls.maxDistance=globe.camera().position.length()*1.5;
+ globe.pointOfView({lat:22,lng:75,altitude:2.15},0);
+ const resize=()=>{const w=host.clientWidth,h=host.clientHeight;globe.width(w).height(h)};
+ resize();new ResizeObserver(resize).observe(host);
+ fetch('https://unpkg.com/world-atlas@2/countries-110m.json')
+  .then(r=>{if(!r.ok)throw new Error('Map data unavailable');return r.json()})
+  .then(topology=>{
+   const features=topojson.feature(topology,topology.objects.countries).features;
+   globe.polygonsData(features);
+  }).catch(()=>{});
+ const pause=()=>{controls.autoRotate=false};
+ const resume=()=>{if(!reduced)controls.autoRotate=true};
+ host.addEventListener('pointerdown',pause);
+ window.addEventListener('pointerup',resume);
+ host.addEventListener('pointerleave',resume);
+ host.addEventListener('touchend',resume,{passive:true});
+})();
 </script>
 </body></html>
