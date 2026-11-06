@@ -153,7 +153,7 @@ if(!reduceMotion){
   .polygonsData([])
   .polygonCapColor(()=> 'rgba(17,49,76,0.88)')
   .polygonSideColor(()=> 'rgba(20,76,111,0.22)')
-  .polygonStrokeColor(()=> 'rgba(91,190,235,0.62)')
+  .polygonStrokeColor(d=>String(d.id)==='356' ? 'rgba(0,0,0,0)' : 'rgba(91,190,235,0.62)')
   .polygonAltitude(.006)
   .arcsData(links)
   .arcStartLat('startLat').arcStartLng('startLng')
@@ -180,6 +180,14 @@ if(!reduceMotion){
    const features=topojson.feature(topology,topology.objects.countries).features;
    globe.polygonsData(features);
   }).catch(err=>console.error('World country geometry unavailable:',err));
+ // Survey of India official mainland boundary, transformed to WGS84.
+ const indiaEncoded=atob("b2tnQW98cEN+R3dLeUdxWWxNc0Z0T29UZFZhdEBsSHtIakRiRHBFdUNsR31hQHBKaUY/bEhuQmlCfUF9VHBDcU55SHRAZkNlSm1OY1JzRXtfQGZCZ0trR2NDZ0B9RmRLcVd5QHFPcElhRmhDbUp8RmFBfm5AblBkRH5QfEdbRHhPZk1rQ3xMdEh5QW5PekR8TnZUa0pLaEt6UHVDekNnXGpOcEZgUXlQbEtoSntCdkZyTnpTd0VmSXFObkJkRnZRZkJ2QXxFfUZ4SXBDSn1GZE5xS3pLfENmSn1HdkR4RnZOdUlrS2VJckBhQ2hYc1FgRWNKc0FnT2hMcVZ0S2NAcFJtb0BiXnRoQG5Ic0FwSGpJek1tQnBFckhmUGZDfk91Wm9HZUJsU2NnQGRNdUV1QGFHflFrWmVDcUpoTnVWd0FlT3hMd0B+QWdbdkZjR2tIa0NoR3dcZUVecUNzUWpHY0h+QXNTckZpQ3BJfkFoRF9TdEV5Ql9AbUl+RWdAZ0Z5WGJSZU1lRWFKfkFhUmZLe1dlSWlUbkdnQGpFcU51R2VhQHpGbUZnV2dKeU1oQmlHZEhfaUBjTHlJZkJbe05tSGVMYkZjTXxIZ0JkUXZGZk51SGBKeEliQXdGaklNY0J5QXJKZ0xrQmlOYElnXW9Le11oR29Va0F5e0BhRnNLbkNpSWFGX0NxUWREe0BpRGNLdEVDdlVpSHJEcUdlRG1EcERoR2dWZUhlUWJEe0RnQWVOcUlzSmtHakJtS2NgQHlFakF3S3FIdUB1ZEBrWV9ReU5tWGRKeUlkR31kQGtNd0lvS2NedExzSHFAX0h2SmhQaEp1Ql9KYVV0RGBCdEtfSGhWZlVsQ3tHc0ZrTmZQc25AdEV4RHZCbUVsR2xBZUB4RmJRflR2SEtyVXdNc0RwT31DVV9GZkp4RHhcYmNAeHBAaERyUGpJbERwVndGfEl6SXRHaUFiS2pIckluT2hKdEJ+Q2FJbktuQHRbalJ6ZUBwTm9Ifld8QnBOdUd+SXJXd0VwYUBkQn5GdkRrQWxJaF9AZkBuT31EbERkQmVAYEZoTHxAX0JsQnJEekFtTHpLfEdmQGJBeENza0JmU2xDbkxxRHJFfk5ZfEl+S2JMc0N0SHBMdVRiTHZMT2lBakNjT3RAdU5+SGFebUxkQWVMYUl9Q3ZEe0RxRVp6RXlIb0tjQGNEaU55UmVHZ0l8QnhAfU59SHxCdUh8VG5BYGVCbUhgZUBxZ0BtQmlRfkt4T2hFbUF8TGVHbktlT2ZDU2pKakljSGlAYFdpRH1Da1B0VH5HYkNqQHFIZEVrQWhMclR6VHxCU3dIdlF7T119T3xIeUB4QnFJakFAZkVoRF9BfFx2TnhBdENmQ2NDYEt2Q2lBfkpqSXxQaVNwRWFYaElyQWBHd0NuRmBLaExiQG5IZU5iTmJEbkFpUHhLbEhqSXdGakRyQnhkQHdKdkx6QGlDbkFkRV5zQGZDZURMckNmR3xSb0F7S2BDYkl1QGNEYkZpT3FCfEJuQ2lDfEFWeEJ+R2JBb0NyQHBAeER8RXNBZER0R29DaEBPYEBsTXhAfVduRV9MbUJxRXBOdkh1TWRRck56SGZNZkhiZEBsS2RNekx2QXxNaUd0RGhBYEJjRmZLdFB8RmRCfEBzQ2BLalBuS35FaE5kb0B6Wn5qQGp7QGpxQHhRemFAaFloVWhgQHh2QGpIekNqQnFGY0ZKdkRRZkhsQFRQVldmQGBAaUBzQFNOUGVAfkdqRVFnQVJDS1NEQ0pBdk5gZEBEflh6Y0B+VUhkRmVHXHlBekZ+Sm5XamVAYk54XWlIcF16QmByQGVMdnFAdkp6WGpQellqRmxxQW1GckFqY0B+TH5AaltoVGhGcEBuR2FGSmFSekJLeEN3RGxAZ0BKQHdGYk1Mak1mSXJiQHRKekxsYUBuRmxRZl9Ad0F0TXFNYFJpYUB+W2t4Q35xQGlWekxlUGZSdXNAcFZxfkBqTH1nQHpOZWJAdFpzZ0B6SVVwRGdSYkt7bEFwT01fQW5AS0d7QGdzQXxXe0lLZEFjR2VFQGBAeENrRXFBYUNgRHZEZEFkQXxAR05nWnNAdUFoRGNcbEVpbUBfT31VekNpSG5LX1FkQGVCe0NXT2pBdEVnT31WWGRZY1J3S25CdEthQmRAfU1tQnBBc0tpRmNDZkJgUmhPdlN+U3tEdFliS3BTfmhAZEpyZUBxVGBnQHduQXhsQWlFX0JnQ2dEdERgQVVrSXpLaEJpR3FKX0FjU3lGd0NyQUN4QHFCUE9oQExGQUJJZ0d9Sm5AZ0dzWX1YbUJqRWdNe19AeUBgaEB0SnBIa0F7QnRGXVVwRWlDaUFFUmhNZFpJblFoQW1CX0NmUF9WfGJAX0Z5RG1Nak1tUWFMfEV+T3JHYkFlQGBMY095QGtFeUdEaVhtVG1CaEVxQnFEX0R8Q3dCaUN5Y0BwRnFHP2tRd0ZpRHtGZVtwSVNmQX1Hc0prWHNBcEZtSFh7RHtFdVt8S3FOfkxhUkhXbFdfTXBJaWVAc0NrQXxUdUhwUm1ad0N5ckBjcEBCcUx2T21IZkFnR31OY19BcXFAeV1jT3VhQF9hQF9Ua1ZlRndOfWJAY0l2RGNHa0JhQXNHYVlvVGtHb1BzQnJKb01zQXtCbUVhUW5JfUlxRmdJX1BpQW9Va0dnR3lOfE9ReFhlVWFAdkRsQ2FAbFB7UnhrQGlxQHZBY11qS2lIZUFxQXVMY0xfRG9Fd1FzTW9FX0ZyWXlRbUNjQXhWc0hwT2tJYEJqQn5XYUZ0SXlSZ0N3S3tXaUhrRn1EeEA/Z3FAZUxwS2hFb1Z5TnFoQA==");
+ const decodeIndiaLine=s=>{let i=0,lat=0,lng=0,out=[];while(i<s.length){let r=0,sh=0,b;do{b=s.charCodeAt(i++)-63;r|=(b&31)<<sh;sh+=5}while(b>=32);lat+=(r&1)?~(r>>1):(r>>1);r=0;sh=0;do{b=s.charCodeAt(i++)-63;r|=(b&31)<<sh;sh+=5}while(b>=32);lng+=(r&1)?~(r>>1):(r>>1);out.push({lat:lat/1e3,lng:lng/1e3})}return out};
+ globe.pathsData([{points:decodeIndiaLine(indiaEncoded)}])
+  .pathPoints('points').pathPointLat(p=>p.lat).pathPointLng(p=>p.lng)
+  .pathColor(()=> 'rgba(91,190,235,0.88)').pathStroke(0.72)
+  .pathAltitude(0.009).pathDashLength(1).pathDashGap(0);
+
  const pause=()=>{controls.autoRotate=false};
  const resume=()=>{if(!reduced)controls.autoRotate=true};
  host.addEventListener('pointerdown',pause);
