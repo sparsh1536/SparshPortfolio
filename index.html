@@ -11,6 +11,7 @@
 </head>
 <body>
 <div class="noise"></div><div class="cursor-glow"></div><div class="scroll-progress"></div>
+<button class="sound-toggle" type="button" aria-pressed="false" aria-label="Turn sound on"><span class="sound-icon">♫</span><span class="sound-label">SOUND OFF</span><i class="sound-bars"><b></b><b></b><b></b><b></b></i></button>
 <header class="topbar">
   <a class="brand magnetic" href="#home" aria-label="Sparsh Soni home"><span class="brand-mark">S<span>.</span></span><span class="brand-name">SPARSH SONI<small>IDEAS / SYSTEMS / IMPACT</small></span></a>
   <nav class="main-nav"><a href="#about">About <i>01</i></a><a href="#work">Work <i>02</i></a><a href="#stack">Stack <i>03</i></a><a href="#journey">Journey <i>04</i></a></nav>
@@ -114,6 +115,55 @@ if(!reduceMotion){
   });
  }
 }
+</script>
+
+
+<script>
+/* Original Web Audio soundscape: no external music files or autoplay. */
+(()=>{
+ const toggle=document.querySelector('.sound-toggle');
+ if(!toggle)return;
+ let ctx=null,master=null,musicGain=null,musicTimer=null,enabled=false,step=0;
+ const notes=[110,164.81,220,164.81,130.81,196,261.63,196];
+ const getAudio=()=>{
+  if(!ctx){ctx=new (window.AudioContext||window.webkitAudioContext)();master=ctx.createGain();master.gain.value=.42;master.connect(ctx.destination);musicGain=ctx.createGain();musicGain.gain.value=0;musicGain.connect(master);}
+  if(ctx.state==='suspended')ctx.resume();
+ };
+ const tone=(freq,duration=.09,volume=.12,type='sine',destination=master)=>{
+  if(!ctx)return;const now=ctx.currentTime,osc=ctx.createOscillator(),gain=ctx.createGain();
+  osc.type=type;osc.frequency.setValueAtTime(freq,now);gain.gain.setValueAtTime(.0001,now);gain.gain.exponentialRampToValueAtTime(volume,now+.012);gain.gain.exponentialRampToValueAtTime(.0001,now+duration);
+  osc.connect(gain);gain.connect(destination);osc.start(now);osc.stop(now+duration+.02);
+ };
+ const chord=()=>{
+  if(!enabled||!ctx)return;
+  const root=notes[step++%notes.length],now=ctx.currentTime;
+  [root,root*1.5,root*2].forEach((freq,i)=>tone(freq,2.7,.018/(i+1),'sine',musicGain));
+ };
+ const startMusic=()=>{chord();musicTimer=setInterval(chord,2600);musicGain.gain.cancelScheduledValues(ctx.currentTime);musicGain.gain.setTargetAtTime(.8,ctx.currentTime,.8)};
+ const stopMusic=()=>{if(musicTimer)clearInterval(musicTimer);musicTimer=null;if(ctx&&musicGain)musicGain.gain.setTargetAtTime(0,ctx.currentTime,.18)};
+ const clickSound=()=>{if(!enabled)return;getAudio();tone(660,.055,.07,'sine');setTimeout(()=>tone(880,.075,.045,'sine'),38)};
+ const hoverSound=()=>{if(enabled)tone(430,.035,.018,'triangle')};
+ toggle.addEventListener('click',()=>{
+  getAudio();enabled=!enabled;
+  if(enabled){startMusic();tone(740,.11,.08,'sine')}
+  else stopMusic();
+  toggle.classList.toggle('is-on',enabled);toggle.setAttribute('aria-pressed',String(enabled));
+  toggle.setAttribute('aria-label',enabled?'Turn sound off':'Turn sound on');
+  toggle.querySelector('.sound-label').textContent=enabled?'SOUND ON':'SOUND OFF';
+ });
+ document.addEventListener('click',e=>{
+  const target=e.target.closest('a,button,[role="button"],[tabindex]:not([tabindex="-1"])');
+  if(target&&target!==toggle)clickSound();
+ },true);
+ document.addEventListener('pointerover',e=>{
+  const target=e.target.closest('a,button,[role="button"]');
+  if(target&&target!==toggle&&target.dataset.soundHover!=='0'){target.dataset.soundHover='0';hoverSound()}
+ },{passive:true});
+ document.addEventListener('keydown',e=>{
+  if((e.key==='Enter'||e.key===' ')&&e.target.closest('a,button,[role="button"]')&&e.target!==toggle)clickSound();
+ });
+ document.addEventListener('visibilitychange',()=>{if(document.hidden)stopMusic();else if(enabled)startMusic()});
+})();
 </script>
 
 <script src="https://unpkg.com/globe.gl"></script>
