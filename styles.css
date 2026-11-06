@@ -229,7 +229,7 @@
 
 /* Compact, opt-in audio control */
 .sound-toggle{
- position:fixed;right:24px;bottom:24px;z-index:1000;
+ position:fixed;right:24px;top:22px;bottom:auto;z-index:1000;
  display:flex;align-items:center;gap:10px;padding:11px 14px;
  color:#dcecf5;background:rgba(7,13,24,.88);
  border:1px solid rgba(57,200,255,.42);border-radius:999px;
@@ -249,5 +249,5 @@
 .sound-toggle.is-on .sound-bars b:nth-child(3){animation-delay:.3s}
 .sound-toggle.is-on .sound-bars b:nth-child(4){animation-delay:.45s}
 @keyframes soundWave{from{height:3px}to{height:13px}}
-@media(max-width:680px){.sound-toggle{right:14px;bottom:14px;padding:10px 12px}}
+@media(max-width:680px){.sound-toggle{right:14px;top:14px;bottom:auto;padding:10px 12px}}
 @media(prefers-reduced-motion:reduce){.sound-toggle.is-on .sound-bars b{animation:none;height:6px}}
