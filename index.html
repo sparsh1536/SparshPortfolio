@@ -180,6 +180,26 @@ if(!reduceMotion){
    const features=topojson.feature(topology,topology.objects.countries).features;
    globe.polygonsData(features);
   }).catch(()=>{});
+ // Correct northern India perimeter from a full India-focused topology.
+ // Render a line only: no regional fill and no extra state outlines.
+ fetch('/india-boundaries.topojson')
+  .then(r=>{if(!r.ok)throw new Error('India topology unavailable');return r.json()})
+  .then(topology=>{
+   const merged=topojson.merge(topology,topology.objects.data.geometries);
+   const rings=merged.coordinates.map(poly=>poly[0]).filter(Boolean);
+   const paths=[];
+   rings.forEach(ring=>{
+    let segment=[];
+    const flush=()=>{if(segment.length>1)paths.push({points:segment.map(([lng,lat])=>({lng,lat}))});segment=[]};
+    ring.forEach(p=>{if(p[1]>=29.5)segment.push(p);else flush()});
+    flush();
+   });
+   if(paths.length)globe.pathsData(paths)
+    .pathPoints('points').pathPointLat(p=>p.lat).pathPointLng(p=>p.lng)
+    .pathColor(()=> 'rgba(91,190,235,0.72)')
+    .pathStroke(0.55).pathAltitude(0.008)
+    .pathDashLength(1).pathDashGap(0);
+  }).catch(err=>console.error('India northern outline unavailable:',err));
  const pause=()=>{controls.autoRotate=false};
  const resume=()=>{if(!reduced)controls.autoRotate=true};
  host.addEventListener('pointerdown',pause);
