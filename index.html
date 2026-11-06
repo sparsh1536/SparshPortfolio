@@ -155,12 +155,6 @@ if(!reduceMotion){
   .polygonSideColor(()=> 'rgba(20,76,111,0.22)')
   .polygonStrokeColor(d=>String(d.id)==='356' ? 'rgba(0,0,0,0)' : 'rgba(91,190,235,0.62)')
   .polygonAltitude(.006)
-  .arcsData(links)
-  .arcStartLat('startLat').arcStartLng('startLng')
-  .arcEndLat('endLat').arcEndLng('endLng')
-  .arcColor('color').arcAltitudeAutoScale(.35)
-  .arcStroke(.55).arcDashLength(.42).arcDashGap(1.1)
-  .arcDashAnimateTime(2600)
   .pointsData(points).pointLat('lat').pointLng('lng')
   .pointColor('color').pointAltitude(.012).pointRadius('size')
   .pointsMerge(false);
