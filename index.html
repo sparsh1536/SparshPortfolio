@@ -151,10 +151,10 @@ if(!reduceMotion){
   .atmosphereColor('#258fc9')
   .atmosphereAltitude(.17)
   .polygonsData([])
-  .polygonCapColor(d=>d.properties?.__indiaNorth ? 'rgba(27,87,125,0.96)' : 'rgba(17,49,76,0.88)')
+  .polygonCapColor(()=> 'rgba(17,49,76,0.88)')
   .polygonSideColor(()=> 'rgba(20,76,111,0.22)')
-  .polygonStrokeColor(d=>d.properties?.__indiaNorth ? 'rgba(0,0,0,0)' : 'rgba(91,190,235,0.62)')
-  .polygonAltitude(d=>d.properties?.__indiaNorth ? .006 : .006)
+  .polygonStrokeColor(()=> 'rgba(91,190,235,0.62)')
+  .polygonAltitude(.006)
   .arcsData(links)
   .arcStartLat('startLat').arcStartLng('startLng')
   .arcEndLat('endLat').arcEndLng('endLng')
@@ -174,26 +174,37 @@ if(!reduceMotion){
  globe.pointOfView({lat:22,lng:75,altitude:2.15},0);
  const resize=()=>{const w=host.clientWidth,h=host.clientHeight;globe.width(w).height(h)};
  resize();new ResizeObserver(resize).observe(host);
- let baseCountries=[];
- let indiaNorthern=[];
- const renderCountryPolygons=()=>globe.polygonsData([...baseCountries,...indiaNorthern]);
  fetch('https://unpkg.com/world-atlas@2/countries-110m.json')
   .then(r=>{if(!r.ok)throw new Error('Map data unavailable');return r.json()})
   .then(topology=>{
-   baseCountries=topojson.feature(topology,topology.objects.countries).features;
-   renderCountryPolygons();
+   const features=topojson.feature(topology,topology.objects.countries).features;
+   globe.polygonsData(features);
   }).catch(()=>{});
- // Overlay the complete J&K and Ladakh geometry, including the northern
- // boundary extent represented in the India-focused state dataset.
+ // Draw the corrected northern India geometry as a fine border path only.
+ // Do not add state polygons: their filled caps create a visible patch.
  fetch('/india-states-simplified.geojson')
   .then(r=>{if(!r.ok)throw new Error('India boundary data unavailable');return r.json()})
   .then(data=>{
    const north=data.features.filter(f=>['Jammu and Kashmir','Ladakh'].includes(f.properties?.NAME_1));
    if(!north.length)throw new Error('J&K/Ladakh geometry missing');
-   indiaNorthern=north.map(f=>({...f,properties:{...f.properties,__indiaNorth:true}}));
-   renderCountryPolygons();
-   console.info('India northern boundary overlay loaded:',north.map(f=>f.properties.NAME_1));
-  }).catch(err=>console.error('India boundary overlay failed:',err));
+   const paths=[];
+   const addRing=ring=>paths.push({points:ring.map(([lng,lat])=>({lat,lng}))});
+   north.forEach(feature=>{
+    const geometry=feature.geometry;
+    if(geometry.type==='Polygon')geometry.coordinates.forEach(addRing);
+    if(geometry.type==='MultiPolygon')geometry.coordinates.forEach(poly=>poly.forEach(addRing));
+   });
+   globe.pathsData(paths)
+    .pathPoints('points')
+    .pathPointLat(p=>p.lat)
+    .pathPointLng(p=>p.lng)
+    .pathColor(()=> 'rgba(91,190,235,0.72)')
+    .pathStroke(0.55)
+    .pathAltitude(0.008)
+    .pathDashLength(1)
+    .pathDashGap(0);
+   console.info('India boundary line loaded without region fill');
+  }).catch(err=>console.error('India boundary line failed:',err));
  const pause=()=>{controls.autoRotate=false};
  const resume=()=>{if(!reduced)controls.autoRotate=true};
  host.addEventListener('pointerdown',pause);
