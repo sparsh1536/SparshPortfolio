@@ -249,7 +249,7 @@
 .sound-toggle.is-on .sound-bars b:nth-child(3){animation-delay:.3s}
 .sound-toggle.is-on .sound-bars b:nth-child(4){animation-delay:.45s}
 @keyframes soundWave{from{height:3px}to{height:13px}}
-@media(max-width:680px){.sound-toggle{right:14px;top:14px;bottom:auto;padding:10px 12px}}
+@media(max-width:680px){.sound-toggle{right:10px;top:10px;bottom:auto;gap:6px;padding:7px 9px;font-size:8px;letter-spacing:.08em}.sound-icon{font-size:13px}.sound-bars{height:10px}.sound-bars b{width:1.5px}.sound-toggle.is-on .sound-bars b{animation-duration:.8s}}
 @media(prefers-reduced-motion:reduce){.sound-toggle.is-on .sound-bars b{animation:none;height:6px}}
 
 
