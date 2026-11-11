@@ -53,7 +53,7 @@
 @media(max-width:680px){.hero-desc{font-size:14px;line-height:1.85}}
 
 
-/* Project gallery — product-like, tactile and clearly differentiated */
+/* Project gallery: product-like, tactile and clearly differentiated */
 .work-section{padding-top:150px}
 .work-heading{align-items:flex-end;margin-bottom:66px;gap:30px}
 .work-heading h2{font-size:clamp(58px,7vw,94px);line-height:.9}
@@ -123,7 +123,7 @@
 }
 
 
-/* Artistic world map — replaces the orbital identity graphic */
+/* Artistic world map: replaces the orbital identity graphic */
 .hero-side{height:auto;min-height:440px;justify-content:center;align-items:stretch}
 .world-visual{position:relative;width:100%;max-width:650px;margin:auto;padding:10px 0 0;isolation:isolate}
 .world-visual:before{content:"";position:absolute;inset:7% 0 14%;z-index:-2;background-image:linear-gradient(rgba(100,160,205,.045) 1px,transparent 1px),linear-gradient(90deg,rgba(100,160,205,.045) 1px,transparent 1px);background-size:38px 38px;mask-image:radial-gradient(ellipse,black 15%,transparent 76%)}
@@ -151,7 +151,7 @@
 @media(prefers-reduced-motion:reduce){.route,.india-pulse{animation:none}}
 
 
-/* World map v2 — make the map the hero, not a tiny ornament */
+/* World map v2: make the map the hero, not a tiny ornament */
 .hero-orbit{display:none!important}
 .hero{grid-template-columns:1.02fr .98fr;gap:24px}
 .hero-side{height:auto;min-height:550px;justify-content:center;align-items:center;overflow:visible}
@@ -262,7 +262,7 @@
 @media(max-width:680px){.profile-portrait-wrap{height:210px}}
 
 
-/* Preserve the complete original portrait — never crop the subject */
+/* Preserve the complete original portrait: never crop the subject */
 .profile-portrait-wrap{
   height:auto;
   aspect-ratio:455 / 820;
