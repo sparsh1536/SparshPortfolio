@@ -11,7 +11,7 @@
 </head>
 <body>
 <div class="noise"></div><div class="cursor-glow"></div><div class="scroll-progress"></div>
-<button class="sound-toggle" type="button" aria-pressed="false" aria-label="Turn sound on"><span class="sound-label">SOUND OFF</span><i class="sound-bars"><b></b><b></b><b></b><b></b></i></button>
+<button class="sound-toggle" type="button" aria-pressed="false" aria-label="Turn sound on"><span class="sound-label">SOUND OFF</span><i class="sound-bars"><b></b><b></b><b></b><b></b></i></button><span class="sr-only" id="site-status" role="status" aria-live="polite"></span>
 <header class="topbar">
   <a class="brand magnetic" href="#home" aria-label="Sparsh Soni home"><span class="brand-mark">S<span>.</span></span><span class="brand-name">SPARSH SONI<small>IDEAS / SYSTEMS / IMPACT</small></span></a>
   <nav class="main-nav" id="primary-navigation"><a href="#about">About <i>01</i></a><a href="#work">Work <i>02</i></a><a href="#stack">Stack <i>03</i></a><a href="#journey">Journey <i>04</i></a></nav>
@@ -95,8 +95,18 @@
 <script>
 const reduceMotion=window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 const menu=document.querySelector('.menu'),nav=document.querySelector('.main-nav');
-menu.addEventListener('click',()=>{nav.classList.toggle('open');menu.classList.toggle('active')});
-nav.querySelectorAll('a').forEach(a=>a.addEventListener('click',()=>{nav.classList.remove('open');menu.classList.remove('active')}));
+const setMenuOpen=open=>{
+ nav.classList.toggle('open',open);
+ menu.classList.toggle('active',open);
+ menu.setAttribute('aria-expanded',String(open));
+ menu.setAttribute('aria-label',open?'Close navigation':'Open navigation');
+};
+menu.addEventListener('click',()=>setMenuOpen(menu.getAttribute('aria-expanded')!=='true'));
+nav.querySelectorAll('a').forEach(a=>a.addEventListener('click',()=>setMenuOpen(false)));
+document.addEventListener('keydown',event=>{if(event.key==='Escape')setMenuOpen(false)});
+document.addEventListener('click',event=>{
+ if(!nav.contains(event.target)&&!menu.contains(event.target))setMenuOpen(false);
+});
 const progress=document.querySelector('.scroll-progress');
 const updateProgress=()=>{const max=document.documentElement.scrollHeight-innerHeight;progress.style.transform='scaleX('+(max>0?scrollY/max:0)+')'};
 addEventListener('scroll',updateProgress,{passive:true});updateProgress();
@@ -128,12 +138,14 @@ if(!reduceMotion){
  audio.preload='auto';
  audio.volume=0.4;
  let enabled=true;
- const label=toggle.querySelector('.sound-label');\n const status=document.getElementById('site-status');
+ const label=toggle.querySelector('.sound-label');
+ const status=document.getElementById('site-status');
  const setState=on=>{
   toggle.classList.toggle('is-on',on);
   toggle.setAttribute('aria-pressed',String(on));
   toggle.setAttribute('aria-label',on?'Turn sound off':'Turn sound on');
-  if(label)label.textContent=on?'SOUND ON':'SOUND OFF';\n  if(status)status.textContent=on?'Background audio is on.':'Background audio is off.';
+  if(label)label.textContent=on?'SOUND ON':'SOUND OFF';
+  if(status)status.textContent=on?'Background audio is on.':'Background audio is off.';
  };
  const playMusic=()=>{
   if(!enabled)return;
